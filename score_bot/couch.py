@@ -2,6 +2,7 @@ import couchdb
 from datetime import datetime
 
 class couchDatabase:
+
     def __init__(self , url ,db_name):
         couch = couchdb.Server(url)
         if db_name in couch:
@@ -9,6 +10,12 @@ class couchDatabase:
         else:
             db = couch.create(db_name)
         self.db = db
+    def getUser(self, user_id):
+        getuser = self.db.get("user:"+user_id)
+        if getuser:
+            return getuser
+        else:
+            return            
     def addPoints(self , user_id , points):
         getuser = self.db.get("user:"+user_id)
         if getuser:
