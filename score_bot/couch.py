@@ -10,12 +10,26 @@ class couchDatabase:
         else:
             db = couch.create(db_name)
         self.db = db
+
     def getUser(self, user_id):
         getuser = self.db.get("user:"+user_id)
         if getuser:
             return getuser
         else:
             return            
+    
+    def ping(self):
+        return self.db.info()
+
+    def getAllUsers(self):
+        results = self.db.find({
+            "selector": {
+                "_id": {"$gt": None}  # Matches all documents
+            },
+            "limit": 10000  # Adjust as needed
+        })
+        return list(results)
+
     def addPoints(self , user_id , points):
         getuser = self.db.get("user:"+user_id)
         if getuser:
@@ -34,5 +48,7 @@ class couchDatabase:
             self.db.save(user_doc)
             print("User does not exist")
 
-couchdb = couchDatabase("http://admin:password@host:port/" , "users")
+couchdb = couchDatabase("http://admin:password@host:port" , "users")
 couchdb.addPoints("12345634" , 100)
+print(couchdb.ping())
+print(couchdb.getAllUsers())
